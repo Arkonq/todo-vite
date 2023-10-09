@@ -1,4 +1,4 @@
-import { CounterAction } from "../types/types";
+import { CounterAction } from "../../types/types";
 import {AnyAction} from 'redux';
 
  const initialState = {

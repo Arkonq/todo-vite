@@ -22,6 +22,8 @@ export interface TodoAction {
 
 export interface TodoState {
   todo: {
-    todos: Todo[],
+    todos: Todo[]
   }
 }
+
+export type IError = string | null

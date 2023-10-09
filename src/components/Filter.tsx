@@ -4,7 +4,7 @@ interface FilterProps {
   setShowDone: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-const Filter = ({showDone, setShowDone}: FilterProps) => {
+const Filter = ({ showDone, setShowDone }: FilterProps) => {
 
   const filterTodos = () => {
     if (showDone) {
@@ -15,15 +15,17 @@ const Filter = ({showDone, setShowDone}: FilterProps) => {
   }
 
   return (
-    <FormControlLabel control={
-      <Checkbox
-        checked={showDone}
-        onChange={filterTodos}
-        inputProps={{ 'aria-label': 'controlled' }}
+    <div className="filter">
+      <FormControlLabel control={
+        <Checkbox
+          checked={showDone}
+          onChange={filterTodos}
+          inputProps={{ 'aria-label': 'controlled' }}
+        />
+      }
+        label="Show done todos"
       />
-    }
-      label="Show done todos"
-    />
+    </div>
   );
 }
 

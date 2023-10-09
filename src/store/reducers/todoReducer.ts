@@ -1,5 +1,5 @@
-import { Todo } from './../types/types';
-import { TodoAction } from "../types/types";
+import { Todo } from '../../types/types';
+import { TodoAction } from "../../types/types";
 
 const initialState = {
   todos: []
@@ -23,6 +23,9 @@ export const todoReducer = (state = initialState, action: TodoAction) => {
     }
     case "FILTER": {      
       return { todos: (state.todos as Todo[]).filter((obj => obj.isDone !== true)) }
+    }
+    case "CLEAR": {      
+      return { todos: [] }
     }
     default:
       return state;

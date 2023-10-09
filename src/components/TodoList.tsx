@@ -1,27 +1,34 @@
-import DoneIcon from '@mui/icons-material/Done';
-import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
-import { Todo, TodoState } from '../types/types';
+import { IError, Todo, TodoState } from '../types/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import Filter from './Filter';
+import TodoListFiltered from './TodoListFiltered';
 
 const TodoList = () => {
   const todos = useSelector<TodoState>(state => state.todo.todos) as Todo[];
   const dispatch = useDispatch();
   const [showDone, setShowDone] = useState(true);
+  const [error, setError] = useState<IError>(null);
 
   useEffect(() => {
     fetch('http://localhost:8000/todos')
-      .then(data => data.json())
+      .then(response => {
+        if (!response.ok) {
+          setError('Error: Network response was not ok');
+          throw new Error('Network response was not ok');
+        }
+        return response.json()
+      })
       .then(resTodos => {
-        console.log(resTodos);
         dispatch({ type: 'INIT', payload: resTodos })
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setError("Error: " + error);
       });
   }, [])
 
   const todoIsDone = (todo: Todo) => {
-    dispatch({ type: "DONE", payload: todo.id })
-
     fetch('http://localhost:8000/todos/' + todo.id, {
       method: 'PUT',
       headers: {
@@ -29,50 +36,41 @@ const TodoList = () => {
       },
       body: JSON.stringify({ ...todo, isDone: !todo.isDone })
     })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+
+    dispatch({ type: "DONE", payload: todo.id });
   }
 
   return (
     <>
       <Filter showDone={showDone} setShowDone={setShowDone} />
-      {todos ?
+      {todos.length > 0 ?
         <div className="todo__list">
           {
             showDone ?
-              todos.map((todo: Todo) =>
-                <div className="todo__item" key={todo.id} onClick={() => todoIsDone(todo)}>
-                  <div className="todo__body">{todo.body}</div>
-                  {todo.isDone ?
-                    <div className="todo__is-done">
-                      <DoneIcon color='success' />
-                    </div>
-                    :
-                    <div className="todo__is-done">
-                      <DoNotDisturbIcon color='error' />
-                    </div>
-                  }
-                </div>
-              )
+              <TodoListFiltered todos={todos} todoIsDone={todoIsDone} />
               :
-              todos.filter(todo => todo.isDone !== true).map((todo: Todo) =>
-                <div className="todo__item" key={todo.id} onClick={() => todoIsDone(todo)}>
-                  <div className="todo__body">{todo.body}</div>
-                  {todo.isDone ?
-                    <div className="todo__is-done">
-                      <DoneIcon color='success' />
-                    </div>
-                    :
-                    <div className="todo__is-done">
-                      <DoNotDisturbIcon color='error' />
-                    </div>
-                  }
-                </div>
-              )
+              <TodoListFiltered todos={todos.filter(todo => todo.isDone !== true)} todoIsDone={todoIsDone} />
           }
         </div>
         :
-        <div className='todo__list'>
-          <p>Loading...</p>
-        </div>
+        (
+          error ?
+            <div className='todo__list'>
+              <p style={{ color: 'red' }} >{error}</p>
+            </div>
+            :
+            <div className='todo__list'>
+              <p>List is empty</p>
+            </div>
+        )
       }
     </>
   );

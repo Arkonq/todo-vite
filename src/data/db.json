@@ -1,19 +1,24 @@
 {
   "todos": [
     {
-      "body": "Cook Dinner",
+      "body": "Cook dinner",
       "isDone": false,
       "id": 1
     },
     {
       "body": "Go to the gym",
-      "isDone": false,
+      "isDone": true,
       "id": 2
     },
     {
-      "body": "Visit grandma",
+      "body": "Do cleaning at home",
       "isDone": false,
       "id": 3
+    },
+    {
+      "body": "Task",
+      "isDone": true,
+      "id": 4
     }
   ]
 }
