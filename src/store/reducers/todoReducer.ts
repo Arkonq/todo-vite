@@ -5,26 +5,25 @@ const initialState = {
   todos: []
 }
 
-
 export const todoReducer = (state = initialState, action: TodoAction) => {
   switch (action.type) {
     case "INIT": {
       return { todos: action.payload }
     }
-    case "CREATE": {            
+    case "CREATE": {
       let newTodos = (state.todos as Todo[]).concat(action.payload as Todo);
       return { todos: newTodos }
     }
-    case "DONE": {      
+    case "DONE": {
       let newTodos = state.todos.concat() as Todo[];
       let todoIndex = newTodos.findIndex((obj => obj.id === action.payload));
       newTodos[todoIndex].isDone = !newTodos[todoIndex].isDone;
       return { todos: newTodos }
     }
-    case "FILTER": {      
+    case "FILTER": {
       return { todos: (state.todos as Todo[]).filter((obj => obj.isDone !== true)) }
     }
-    case "CLEAR": {      
+    case "CLEAR": {
       return { todos: [] }
     }
     default:
